@@ -1,145 +1,126 @@
-// Questions that will be asked
-const Questions = [
+const quizData = [
     {
-      q: "Commonly used data types DO NOT include...?",
-      a: [
-        { text: "Alerts", isCorrect: false },
-        { text: "Strings", isCorrect: false },
-        { text: "Booleans", isCorrect: false },
-        { text: "Numbers", isCorrect: true }
-      ]
+      question: "Commonly used data types DO NOT include...?",
+      a: "Alerts",
+      b: "Strings",
+      c: "Booleans",
+      d: "Numbers",
+      correct: "a",
     },
     {
-      q: "Arrays in JavaScript can be used to store...?",
-      a: [
-        { text: "Numbers and strings", isCorrect: true },
-        { text: "Booleans", isCorrect: false },
-        { text: "Alerts", isCorrect: false },
-        { text: "All of the above", isCorrect: false }
-      ]
+      question: "Arrays in JavaScript can be used to store...?",
+      a: "Numbers and strings",
+      b: "Booleans",
+      c: "Alerts",
+      d: "All of the above",
+      correct: "a",
     },
     {
-      q: "String values must be enclosed within...?",
-      a: [
-        { text: "Quotes", isCorrect: true },
-        { text: "Parentheses", isCorrect: false },
-        { text: "Curly brackets", isCorrect: false },
-        { text: "Square brackets", isCorrect: false }
-      ]
-    }
+      question: "String values must be enclosed in...?",
+      a: "Quotes",
+      b: "Parentheses",
+      c: "Curly brackets",
+      d: "Square brackets",
+      correct: "a",
+    },
   ];
   
-  let currQuestion = 0;
+  const quiz = document.getElementById("quiz");
+  const answerElements = document.querySelectorAll(".answer");
+  const questionElement = document.getElementById("question");
+  const a_text = document.getElementById("a_text");
+  const b_text = document.getElementById("b_text");
+  const c_text = document.getElementById("c_text");
+  const d_text = document.getElementById("d_text");
+  const submitButton = document.getElementById("submit");
+  const timerElement = document.getElementById("timer");
+  const highScores = [];
+  
+  let currentQuiz = 0;
   let score = 0;
-  let highScores = [];
+  let timeLeft = 60; // 1 minute in seconds
+  let timerId;
   
-  // Function to load the first question 
-  function loadQues() {
-    const question = document.getElementById("quest");
-    const answer = document.getElementById("ans");
+  const deselectAnswers = () => {
+    answerElements.forEach((answer) => (answer.checked = false));
+  };
   
-    question.textContent = Questions[currQuestion].q;
-    answer.innerHTML = "";
+  const getSelected = () => {
+    let answer;
+    answerElements.forEach((answerElement) => {
+      if (answerElement.checked) answer = answerElement.id;
+    });
+    return answer;
+  };
   
-    for (let i = 0; i < Questions[currQuestion].a.length; i++) {
-      const choicesdiv = document.createElement("div");
-      const choice = document.createElement("input");
-      const choiceLabel = document.createElement("label");
+  const loadQuiz = () => {
+    deselectAnswers();
+    const currentQuizData = quizData[currentQuiz];
+    questionElement.innerText = currentQuizData.question;
+    a_text.innerText = currentQuizData.a;
+    b_text.innerText = currentQuizData.b;
+    c_text.innerText = currentQuizData.c;
+    d_text.innerText = currentQuizData.d;
+  };
   
-      choice.type = "radio";
-      choice.name = "answer";
-      choice.value = i;
+  const startTimer = () => {
+    timerId = setInterval(() => {
+      if (timeLeft > 0) {
+        timeLeft--;
+        timerElement.innerText = `Time left: ${timeLeft} seconds`;
+      } else {
+        clearInterval(timerId);
+        endQuiz();
+      }
+    }, 1000);
+  };
   
-      choiceLabel.textContent = Questions[currQuestion].a[i].text;
-  
-      choicesdiv.appendChild(choice);
-      choicesdiv.appendChild(choiceLabel);
-      answer.appendChild(choicesdiv);
-    }
-    
-  }
-
-  loadQues();
-
-  // Calling the next question
-  function nextQuestion() {
-    if (currQuestion < Questions.length - 1) {
-      currQuestion++;
-      loadQues();
-    } else {
-      document.getElementById("question-section").classList.add("hidden");
-      document.getElementById("result").classList.remove("hidden");
-      loadScore();
-      saveHighScore();
-      document.getElementById("high-scores").classList.remove("hidden");
-    }
-  }
-  
-  
-  function loadScore() {
-    const totalScore = document.getElementById("score");
-    totalScore.textContent = `You scored ${score} out of ${Questions.length}`;
-  
-    const highScoreSection = document.getElementById("high-scores");
-    highScoreSection.innerHTML = "";
-  
-    // Display high scores
-    const highScoreTitle = document.createElement("h2");
-    highScoreTitle.textContent = "High Scores";
-    highScoreSection.appendChild(highScoreTitle);
-  
-    const highScoreList = document.createElement("ol");
-  
-    // Iterate over high scores and create list items
-    for (let i = 0; i < Math.min(highScores.length, 5); i++) {
-      const highScoreItem = document.createElement("li");
-      highScoreItem.textContent = highScores[i];
-      highScoreList.appendChild(highScoreItem);
-    }
-  
-    highScoreSection.appendChild(highScoreList);
-  }
-    
- 
-  function checkAns() {
-    const selectedAns = parseInt(
-      document.querySelector('input[name="answer"]:checked').value
-    );
-  
-    if (Questions[currQuestion].a[selectedAns].isCorrect) {
-      score++;
-      console.log("Correct");
-      nextQuestion();
-    } else {
-      nextQuestion();
-    }
-  }
-  
-  function saveHighScore() {
+  const saveHighScore = () => {
     const playerName = prompt("Enter your name:");
-  
-    // Create a string to store the score and player name
-    const highScore = `${playerName}: ${score}`;
-  
-    // Add the high score to the array
+    const highScore = { name: playerName, score: score };
     highScores.push(highScore);
+  };
   
-    // Sort the high scores in descending order
-    highScores.sort((a, b) => {
-      const scoreA = parseInt(a.split(":")[1]);
-      const scoreB = parseInt(b.split(":")[1]);
-      return scoreB - scoreA;
+  const endQuiz = () => {
+    clearInterval(timerId);
+    saveHighScore();
+    // Sort the high scores array based on the score in descending order
+    highScores.sort((a, b) => b.score - a.score);
+  
+    let highScoresHTML = "<h2>High Scores</h2>";
+    highScores.forEach((highScore, index) => {
+      highScoresHTML += `<p>${index + 1}. ${highScore.name} - ${highScore.score}</p>`;
     });
   
-    // Keep only the top 5 high scores
-    highScores = highScores.slice(0, 5);
-
-    saveHighScore();
-
-  return highScores;
+    quiz.innerHTML = `
+      <h2>You answered ${score}/${quizData.length} questions correctly</h2>
+      <button onclick="history.go(0)">Play Again</button>
+      <div>${highScoresHTML}</div>
+    `;
+  };
   
-  }
-
-  // Call the loadScore function to display the updated high scores
+  submitButton.addEventListener("click", () => {
+    const answer = getSelected();
+    if (answer) {
+      if (answer === quizData[currentQuiz].correct) {
+        score++;
+      } else {
+        timeLeft -= 5; // Deduct 5 seconds for incorrect answer
+        if (timeLeft <= 0) {
+          endQuiz();
+          return;
+        }
+      }
   
+      currentQuiz++;
+      if (currentQuiz < quizData.length) {
+        loadQuiz();
+      } else {
+        endQuiz();
+      }
+    }
+  });
+  
+  loadQuiz();
+  startTimer();
   

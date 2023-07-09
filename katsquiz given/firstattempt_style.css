@@ -1,10 +1,8 @@
 body {
-    background-color: lightsalmon;
-    display: flex;
-    flex-direction: column;
+    background-color: rgb(37, 97, 150);
 }
-
-.quiz-container {
+ 
+.panel {
     margin-top: 8%;
     display: flex;
     flex-direction: column;
@@ -13,55 +11,51 @@ body {
     color: rgb(53, 1, 35);
 }
 
-.quiz-header {
-    font-size: 60px;
+.hidden {
+    display: none;
+  }
+  
+h1 {
     font-family: 'Great Vibes', cursive;
+    font-size: 80px;
 }
 
-h2 {
+.question {
     font-family: 'Great Vibes', cursive;
     font-size: 30px;
     margin-bottom: 20px;
-    text-align: center;
 }
-
-ul {
-    text-align: center;
-    list-style-type: none;
-    padding: 2rem;
-    align-items: center;
-}
-
-ul li {
+ 
+.answers {
     font-family: 'Annie Use Your Telescope', cursive;
     font-size: 20px;
-    text-align: center;
-    display:flex;
-    justify-content: center;
+    display: grid;
     grid-template-columns: repeat(2, 1fr);
     grid-gap: 20px;
     margin-top: 10px;
     margin-bottom: 20px;
-}
-
-ul li label {
-    cursor: pointer;
-}
-
-button {
-    font-family: 'Annie Use Your Telescope', cursive;
-    font-size: 20px;
     position: fixed;
-    bottom: 5rem;
-    left: 50%;
-    transform: translateX(-50%);
+    top: 40%;
+    left: 40%;
+}
+ 
+.panel .custom-btn {
+    margin-right: 75px;
+    margin-top: 8%;
+    font-size: 20px;
+    padding: 10px 20px;
     background-color: rgb(53, 1, 35);
     color: white;
     border: none;
     cursor: pointer;
 }
-
-button:hover {
-    background-color: darkorchid;
+ 
+#result {
+    font-size: 30px;
+    color: rgb(16, 17, 17);
 }
 
+#high-scores {
+    font-size: 30px;
+    color: rgb(35, 1, 19);
+}
