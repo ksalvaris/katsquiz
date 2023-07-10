@@ -28,3 +28,12 @@ THEN the game is over
 WHEN the game is over
 THEN I can save my initials and my score
 ```
+
+## Link to page
+
+https://ksalvaris.github.io/katsquiz/
+
+## Screenshot 
+
+![image](https://github.com/ksalvaris/katsquiz/assets/135576862/b8e4dd6f-4845-4d76-8207-5ec853be8be2)
+
